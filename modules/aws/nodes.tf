@@ -3,7 +3,9 @@ resource "aws_launch_template" "rancher_master" {
   image_id = var.ami
   instance_type = var.master_instance_type
   key_name = aws_key_pair.ssh.key_name
-
+  iam_instance_profile {
+    name = aws_iam_instance_profile.master_profile.name
+  }
   user_data = base64encode("${path.module}/files/install-docker.sh")
 	block_device_mappings {
     device_name = "/dev/sda1"
@@ -14,10 +16,12 @@ resource "aws_launch_template" "rancher_master" {
       volume_size = var.master_ebs_size
     }
   }
-
-  network_interfaces {
-    delete_on_termination       = true
-    security_groups             = [aws_security_group.rancher.id]
+  vpc_security_group_ids = [aws_security_group.rancher.id]
+  tag_specifications {
+    resource_type = "instance"
+    tags = {
+      "kubernetes.io/cluster/${var.cluster_name}" = "owned"
+    }
   }
 
   tags = merge({
@@ -30,7 +34,9 @@ resource "aws_launch_template" "rancher_worker" {
   image_id      = var.ami
   instance_type = var.worker_instance_type
   key_name = aws_key_pair.ssh.key_name
-
+  iam_instance_profile {
+    name = aws_iam_instance_profile.worker_profile.name
+  }
   user_data = base64encode("${path.module}/files/install-docker.sh")
 
   block_device_mappings {
@@ -43,9 +49,12 @@ resource "aws_launch_template" "rancher_worker" {
     }
   }
 
-  network_interfaces {
-    delete_on_termination       = true
-    security_groups             = [aws_security_group.rancher.id]
+  vpc_security_group_ids = [aws_security_group.rancher.id]
+  tag_specifications {
+    resource_type = "instance"
+    tags = {
+      "kubernetes.io/cluster/${var.cluster_name}" = "owned"
+    }
   }
 
   tags = merge({

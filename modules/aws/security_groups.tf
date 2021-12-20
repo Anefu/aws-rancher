@@ -69,4 +69,8 @@ resource "aws_security_group" "rancher" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
+  tags = {
+    Name = "${var.cluster_name}-sg"
+    "kubernetes.io/cluster/${var.cluster_name}" = "owned"
+  }
 }

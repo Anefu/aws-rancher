@@ -2,6 +2,7 @@ resource "aws_vpc" "rancher_vpc" {
     cidr_block = var.cidr_block
     tags = merge({
         Name = "${var.cluster_name}-VPC"
+        "kubernetes.io/cluster/${var.cluster_name}" = "owned"
     }, var.common_tags)
 }
 # Fetch availability zones
@@ -18,6 +19,7 @@ resource "aws_subnet" "rancher_master_subnets" {
     map_public_ip_on_launch = true
     tags = {
         Name = "${var.cluster_name}-master-${count.index}"
+        "kubernetes.io/cluster/${var.cluster_name}" = "owned"
     }
 }
 
@@ -29,6 +31,7 @@ resource "aws_subnet" "rancher_worker_subnets" {
     map_public_ip_on_launch = true
     tags = {
         Name = "${var.cluster_name}-worker-${count.index}"
+        "kubernetes.io/cluster/${var.cluster_name}" = "owned"
     }
 }
 
