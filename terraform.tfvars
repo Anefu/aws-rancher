@@ -21,9 +21,9 @@ worker_max_count     = 3
 cluster_dns          = "rancher.example.com"
 
 #Rancher vars
-le_email         = "example@gmail.com"
-rancher_password = "rancher"
-ldap_server = "value"
+le_email                 = "example@gmail.com"
+rancher_password         = "rancher"
+ldap_server              = "value"
 service_account_dn       = ""
 service_account_password = ""
 user_search_base         = ""
