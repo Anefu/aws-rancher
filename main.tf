@@ -4,39 +4,34 @@ provider "aws" {
 
 module "aws" {
   source               = "./modules/aws"
-  aws_region           = "us-east-1"
-  cluster_name         = "blas"
-  master_subnets_count = 1
-  cidr_block           = "10.0.0.0/16"
-  worker_subnets_count = 1
-  creds_output_path    = "~/Documents/aws-rancher"
-  r53_zone_name        = "tooling.tk"
-  common_tags = {
-    Name = "Rancher"
-  }
-  ami                  = "ami-0b0af3577fe5e3532"
-  master_instance_type = "t2.micro"
-  master_ebs_size      = 50
-  worker_instance_type = "t2.micro"
-  worker_ebs_size      = 50
-  master_node_count    = 1
-  master_max_count     = 3
-  worker_node_count    = 1
-  worker_max_count     = 3
-  cluster_dns          = "rancher.example.com"
+  aws_region           = var.aws_region
+  cluster_name         = var.cluster_name
+  master_subnets_count = var.master_subnets_count
+  cidr_block           = var.cidr_block
+  worker_subnets_count = var.worker_subnets_count
+  creds_output_path    = var.creds_output_path
+  r53_zone_name        = var.r53_zone_name
+  common_tags  = var.common_tags
+  ami                  = var.ami
+  master_instance_type = var.master_instance_type
+  master_ebs_size      = var.master_ebs_size
+  worker_instance_type = var.worker_instance_type
+  worker_ebs_size      = var.worker_ebs_size
+  master_node_count    = var.master_node_count
+  master_max_count     = var.master_max_count
+  worker_node_count    = var.worker_node_count
+  worker_max_count     = var.worker_max_count
+  cluster_dns          = var.cluster_dns
 }
 
 module "rancher" {
   source = "./modules/rancher"
-  # depends_on = [
-  #   module.aws
-  # ]
   cluster_dns      = module.aws.api_url
   master_asg = module.aws.master_asg
   worker_asg = module.aws.worker_asg
-  master_node_count = 1
-  worker_node_count = 1
-  cluster_name     = "rancher.example.com"
-  le_email         = "example@gmail.com"
-  rancher_password = "rancher"
+  master_node_count = var.master_node_count
+  worker_node_count = var.worker_node_count
+  cluster_name     = var.cluster_name
+  le_email         = var.le_email
+  rancher_password = var.rancher_password
 }
