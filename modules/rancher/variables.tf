@@ -78,3 +78,45 @@ variable "worker_node_count" {
   type = number
   description = "Number of created worker nodes"
 }
+
+variable "ldap_server" {
+  type = string
+  description = "LDAP Server"
+}
+
+variable "service_account_dn" {
+  type = string
+  description = "Service Account Distinguished Name"
+}
+
+variable "service_account_password" {
+  type = string
+  description = "Service account password"
+}
+
+variable "user_search_base" {
+  type = string
+  description = "User Search Base"
+}
+
+variable "ldap_port" {
+  type = number
+  description = "LDAP Port"
+  default = 389
+}
+
+variable "ldap_test_username" {
+  type = string
+  description = "Username to test LDAP connection with"
+}
+
+variable "ldap_test_password" {
+  type = string
+  description = "Password for test user"
+}
+
+variable "access_mode" {
+  type = string
+  description = "LDAP Access Mode"
+  default = "unrestricted"
+}

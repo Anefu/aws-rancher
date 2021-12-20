@@ -7,7 +7,7 @@ worker_subnets_count = 1
 creds_output_path    = "~/Documents/aws-rancher"
 r53_zone_name        = "tooling.tk"
 common_tags = {
-Name = "Rancher"
+  Name = "Rancher"
 }
 ami                  = "ami-0b0af3577fe5e3532"
 master_instance_type = "t2.micro"
@@ -23,3 +23,9 @@ cluster_dns          = "rancher.example.com"
 #Rancher vars
 le_email         = "example@gmail.com"
 rancher_password = "rancher"
+ldap_server = "value"
+service_account_dn       = ""
+service_account_password = ""
+user_search_base         = ""
+ldap_test_username       = ""
+ldap_test_password       = ""

@@ -1,5 +1,5 @@
 provider "aws" {
-  region  = "us-east-1"
+  region = "us-east-1"
 }
 
 module "aws" {
@@ -11,7 +11,7 @@ module "aws" {
   worker_subnets_count = var.worker_subnets_count
   creds_output_path    = var.creds_output_path
   r53_zone_name        = var.r53_zone_name
-  common_tags  = var.common_tags
+  common_tags          = var.common_tags
   ami                  = var.ami
   master_instance_type = var.master_instance_type
   master_ebs_size      = var.master_ebs_size
@@ -25,13 +25,19 @@ module "aws" {
 }
 
 module "rancher" {
-  source = "./modules/rancher"
-  cluster_dns      = module.aws.api_url
-  master_asg = module.aws.master_asg
-  worker_asg = module.aws.worker_asg
-  master_node_count = var.master_node_count
-  worker_node_count = var.worker_node_count
-  cluster_name     = var.cluster_name
-  le_email         = var.le_email
-  rancher_password = var.rancher_password
+  source                   = "./modules/rancher"
+  cluster_dns              = module.aws.api_url
+  master_asg               = module.aws.master_asg
+  worker_asg               = module.aws.worker_asg
+  master_node_count        = var.master_node_count
+  worker_node_count        = var.worker_node_count
+  cluster_name             = var.cluster_name
+  le_email                 = var.le_email
+  rancher_password         = var.rancher_password
+  ldap_server              = var.ldap_server
+  service_account_dn       = var.service_account_dn
+  service_account_password = var.service_account_password
+  user_search_base         = var.user_search_base
+  ldap_test_username       = var.ldap_test_username
+  ldap_test_password       = var.ldap_test_password
 }
