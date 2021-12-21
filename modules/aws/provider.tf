@@ -1,4 +1,4 @@
 provider "aws" {
-  region  = var.aws_region
-  alias = "r53"
+  region = var.aws_region
+  alias  = "r53"
 }

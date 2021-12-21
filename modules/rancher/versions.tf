@@ -13,7 +13,7 @@ terraform {
       version = "1.21.0"
     }
     rke = {
-      source = "rancher/rke"
+      source  = "rancher/rke"
       version = "1.2.5"
     }
   }

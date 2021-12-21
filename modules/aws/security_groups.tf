@@ -39,7 +39,7 @@ resource "aws_security_group" "rancher" {
     from_port       = 80
     to_port         = 80
     protocol        = "TCP"
-    security_groups = [aws_security_group.rancher_elb.id]
+    security_groups = ["0.0.0.0/0"]
   }
 
   ingress {
@@ -53,6 +53,20 @@ resource "aws_security_group" "rancher" {
     from_port   = 6443
     to_port     = 6443
     protocol    = "TCP"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 30000
+    to_port     = 32767
+    protocol    = "TCP"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 30000
+    to_port     = 32767
+    protocol    = "UDP"
     cidr_blocks = ["0.0.0.0/0"]
   }
   # allow traffic to any port within itself
@@ -70,7 +84,7 @@ resource "aws_security_group" "rancher" {
     cidr_blocks = ["0.0.0.0/0"]
   }
   tags = {
-    Name = "${var.cluster_name}-sg"
+    Name                                        = "${var.cluster_name}-sg"
     "kubernetes.io/cluster/${var.cluster_name}" = "owned"
   }
 }

@@ -4,17 +4,17 @@ provider "rke" {
 
 provider "helm" {
   kubernetes {
-    config_path = local_file.kube_cluster_yaml.filename
+    config_path = local_file.kube_config_workload_yaml.filename
   }
 }
 
 provider "rancher2" {
   alias     = "bootstrap"
-  api_url   = var.cluster_dns
+  api_url   = var.rancher_domain
   bootstrap = true
 }
 
 provider "rancher2" {
-  api_url   = var.cluster_dns
+  api_url   = var.rancher_domain
   token_key = rancher2_bootstrap.admin.token
 }

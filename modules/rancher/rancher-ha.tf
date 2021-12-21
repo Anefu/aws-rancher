@@ -1,14 +1,17 @@
 resource "null_resource" "cert-manager-crds" {
+  depends_on = [
+    rke_cluster.rancher_server
+  ]
   provisioner "local-exec" {
     command = <<EOF
-kubectl apply -f https://raw.githubusercontent.com/jetstack/cert-manager/v${var.certmanager_version}/deploy/manifests/00-crds.yaml
+kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v${var.certmanager_version}/cert-manager.crds.yaml
 kubectl create namespace cert-manager
 kubectl label namespace cert-manager certmanager.k8s.io/disable-validation=true
 EOF
 
 
     environment = {
-      KUBECONFIG = local_file.kube_cluster_yaml.filename
+      KUBECONFIG = local_file.kube_config_workload_yaml.filename
     }
   }
 }
@@ -20,6 +23,7 @@ resource "helm_release" "cert_manager" {
   name       = "cert-manager"
   chart      = var.certmanager_chart
   namespace  = "cert-manager"
+  repository = "https://charts.jetstack.io"
 
   # Bogus set to link together resources for proper tear down
   set {
@@ -30,14 +34,15 @@ resource "helm_release" "cert_manager" {
 
 # install rancher
 resource "helm_release" "rancher" {
-  name      = "rancher"
-  chart     = var.rancher_chart
-  version   = "v${var.rancher_version}"
-  namespace = "cattle-system"
+  name       = "rancher"
+  chart      = var.rancher_chart
+  version    = "v${var.rancher_version}"
+  namespace  = "cattle-system"
+  repository = "https://releases.rancher.com/server-charts/stable"
 
   set {
     name  = "hostname"
-    value = "${var.cluster_dns}"
+    value = var.rancher_domain
   }
 
   set {
@@ -59,6 +64,10 @@ resource "helm_release" "rancher" {
   set {
     name  = "tf_link"
     value = helm_release.cert_manager.name
+  }
+  set {
+    name  = "bootstrapPassword"
+    value = var.rancher_password
   }
 }
 
@@ -83,7 +92,7 @@ EOF
 
 
     environment = {
-      RANCHER_HOSTNAME = "${var.cluster_dns}"
+      RANCHER_HOSTNAME = "${var.rancher_domain}"
       TF_LINK          = helm_release.rancher.name
     }
   }
